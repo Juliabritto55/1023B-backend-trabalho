@@ -1,6 +1,6 @@
 import {Router} from 'express'
 
-import produtosController from '../produtos/produtos.controller.js'
+import jogosController from '../produtos/jogos.controller.js'
 import usuariosController from '../usuarios/usuarios.controller.js'
 
 const rotas = Router()
