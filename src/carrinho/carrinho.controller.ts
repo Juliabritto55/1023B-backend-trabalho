@@ -23,19 +23,19 @@ class CarrinhoController {
     //adicionarItem
     async adicionarItem(req:AutenticacaoRequest, res:Response) {
         console.log("Chegou na rota de adicionar item ao carrinho");
-        const { jogosdId, quantidade } = req.body;
+    const { produtoId, quantidade } = req.body;
         if(!req.usuarioId)
             return res.status(401).json({mensagem:"Usuário inválido!"})
         const usuarioId = req.usuarioId 
         //Buscar o produto no banco de dados
-        const jogo = await db.collection("jogos").findOne({ _id: ObjectId.createFromHexString(jogoId)});
+    const jogo = await db.collection("jogos").findOne({ _id: ObjectId.createFromHexString(produtoId)});
         if (!jogo) {
             return res.status(400).json({ mensagem: "Jogo não encontrado" });
         }
         //Pegar o preço do produto
         //Pegar o nome do produto
-        const precoUnitario = jogos.preco; // Supondo que o produto tenha um campo 'preco'
-        const nome = jogos.nome; // Supondo que o produto tenha um campo 'nome'
+        const precoUnitario = jogo.preco; // Supondo que o produto tenha um campo 'preco'
+        const nome = jogo.nome; // Supondo que o produto tenha um campo 'nome'
         
         const carrinho = await db.collection<Carrinho>("carrinhos").findOne({ usuarioId: usuarioId });
          // Verificar se um carrinho com o usuário já existe
@@ -44,7 +44,7 @@ class CarrinhoController {
             const novoCarrinho: Carrinho = {
                 usuarioId: usuarioId,
                 itens: [{
-                    jogoId: jogoId,
+                    produtoId: produtoId,
                     quantidade: quantidade,
                     precoUnitario: precoUnitario,
                     nome: nome
@@ -56,7 +56,7 @@ class CarrinhoController {
             return res.status(201).json(novoCarrinho);
         }
         // Se existir, deve adicionar o item ao carrinho existente
-        const itemExistente = carrinho.itens.find(item => item.jogoId === jogoId);
+    const itemExistente = carrinho.itens.find(item => item.produtoId === produtoId);
         if (itemExistente) {
             // Se o item já existir no carrinho, atualizar a quantidade
             itemExistente.quantidade += quantidade;

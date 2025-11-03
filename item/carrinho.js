@@ -1,9 +1,9 @@
 app.put('/carrinho/item', async (req, res) => {
-  const { produtoId, novaQuantidade } = req.body;
+  const { jogoId, novaQuantidade } = req.body;
 
   try {
     const carrinho = await Carrinho.findOne({ usuarioId: req.user.id });
-    const item = carrinho.itens.find(i => i.produtoId.toString() === produtoId);
+    const item = carrinho.itens.find(i => i.jogoId.toString() === jogoId);
 
     if (!item) return res.status(404).json({ msg: 'Item não encontrado' });
 

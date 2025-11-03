@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 
-function ListaProdutos() {
-  const [produtos, setProdutos] = useState([]);
+function ListaJogos() {
+  const [produtos, setJogos] = useState([]);
   const [busca, setBusca] = useState('');
 
   useEffect(() => {
-    fetch('/api/produtos')
+    fetch('/api/jogos')
       .then(res => res.json())
-      .then(data => setProdutos(data));
+      .then(data => setJogos(data));
   }, []);
 
-  const produtosFiltrados = produtos.filter(p =>
+  const jogosFiltrados = jogos.filter(p =>
     p.nome.toLowerCase().includes(busca.toLowerCase()) ||
     p.categoria.toLowerCase().includes(busca.toLowerCase())
   );
@@ -19,18 +19,18 @@ function ListaProdutos() {
     <div>
       <input
         type="text"
-        placeholder="Buscar por nome ou categoria"
+        placeholder="Buscar por titulo ou categoria"
         value={busca}
         onChange={e => setBusca(e.target.value)}
       />
 
       <ul>
-        {produtosFiltrados.map(p => (
-          <li key={p.id}>{p.nome} — {p.categoria}</li>
+        {jogosFiltrados.map(p => (
+          <li key={p.id}>{p.titulo} — {p.categoria}</li>
         ))}
       </ul>
     </div>
   );
 }
 
-export default ListaProdutos;
+export default ListaJogos;
