@@ -4,7 +4,7 @@ import { ObjectId } from "bson";
 import { db } from "../database/banco-mongo.js";
 
 interface ItemCarrinho {
-    produtoId: string;
+    jogoId: string;
     quantidade: number;
     precoUnitario: number;
     nome: string;
@@ -23,12 +23,12 @@ class CarrinhoController {
     //adicionarItem
     async adicionarItem(req:AutenticacaoRequest, res:Response) {
         console.log("Chegou na rota de adicionar item ao carrinho");
-    const { produtoId, quantidade } = req.body;
+    const { jogoId, quantidade } = req.body;
         if(!req.usuarioId)
             return res.status(401).json({mensagem:"Usuário inválido!"})
         const usuarioId = req.usuarioId 
         //Buscar o produto no banco de dados
-    const jogo = await db.collection("jogos").findOne({ _id: ObjectId.createFromHexString(produtoId)});
+    const jogo = await db.collection("jogos").findOne({ _id: ObjectId.createFromHexString(jogoId)});
         if (!jogo) {
             return res.status(400).json({ mensagem: "Jogo não encontrado" });
         }
@@ -44,7 +44,7 @@ class CarrinhoController {
             const novoCarrinho: Carrinho = {
                 usuarioId: usuarioId,
                 itens: [{
-                    produtoId: produtoId,
+                    jogoId: jogoId,
                     quantidade: quantidade,
                     precoUnitario: precoUnitario,
                     nome: nome
@@ -56,14 +56,14 @@ class CarrinhoController {
             return res.status(201).json(novoCarrinho);
         }
         // Se existir, deve adicionar o item ao carrinho existente
-    const itemExistente = carrinho.itens.find(item => item.produtoId === produtoId);
+    const itemExistente = carrinho.itens.find(item => item.jogoId === jogoId);
         if (itemExistente) {
             // Se o item já existir no carrinho, atualizar a quantidade
             itemExistente.quantidade += quantidade;
         } else {
             // Se o item não existir, adicionar ao carrinho
             carrinho.itens.push({
-                produtoId: produtoId,
+                jogoId: jogoId,
                 quantidade: quantidade,
                 precoUnitario: precoUnitario,
                 nome: nome
@@ -108,12 +108,12 @@ class CarrinhoController {
     }
     //atualizarQuantidade
     async atualizarQuantidade(req:Request, res:Response) {
-        const { usuarioId, produtoId, quantidade } = req.body;
+        const { usuarioId, jogoId, quantidade } = req.body;
         const carrinho = await db.collection<Carrinho>("carrinhos").findOne({ usuarioId: usuarioId });
         if (!carrinho) {
             return res.status(404).json({ mensagem: "Carrinho não encontrado" });
         }
-        const item = carrinho.itens.find(item => item.produtoId === produtoId);
+        const item = carrinho.itens.find(item => item.jogoId === jogoId);
         if (!item) {
             return res.status(404).json({ mensagem: "Item não encontrado no carrinho" });
         }
